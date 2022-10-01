@@ -1,0 +1,6 @@
+black
+pylint
+pytest
+pytest-cov
+covalent-python-api
+python-dotenv
