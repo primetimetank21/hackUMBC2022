@@ -8,7 +8,7 @@ api_key = os.getenv("COVALENT_KEY")
 BASE_URL = "https://api.covalenthq.com"
 
 
-def get_transactions(address) -> requests.request:
+def get_transactions(address) -> requests.Response:
     """Get transactions of a given ETH address"""
     transactions_endpoint = (
         BASE_URL + f"/v1/1/address/{address}/transactions_v2/?key={api_key}"
