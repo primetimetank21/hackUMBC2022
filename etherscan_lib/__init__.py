@@ -20,8 +20,10 @@ def get_labels(address: str):
     )
     user_agent = user_agent_rotator.get_random_user_agent()
     headers = {"User-Agent": user_agent}
-    req = requests.get(url, headers=headers, timeout=15)
-    soup = BS(req.text, "html.parser")
+    res = requests.get(url, headers=headers, timeout=15)
+    if res.status_code != 200:
+        return []
+    soup = BS(res.text, "html.parser")
     a_tags = soup.find_all("a", href=True)
     with open("user.txt", "w", encoding="utf-8") as f:
         f.write(str(a_tags))
