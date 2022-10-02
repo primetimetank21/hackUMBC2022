@@ -15,12 +15,13 @@ import matplotlib.pyplot as plt
 
 def main():
     """Driver code"""
-    address = "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+    address = "0x0E57edbA0FccB1E388926193c873120cab961fEe"
     transaction = get_transactions(address)
     with open("transaction.json", "w", encoding="utf-8") as f:
         json.dump(transaction.json(), f)
 
-    get_labels(address)
+    labels = get_labels(address)
+    print(labels)
     # with open("transaction.json", "r", encoding="utf-8") as f:
     #     transactions = json.load(f)
     # transaction_array = transactions["data"]["items"]
