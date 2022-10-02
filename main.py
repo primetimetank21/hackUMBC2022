@@ -5,7 +5,7 @@ Driver code
 # Imports
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from covalent_api_lib import get_transactions
@@ -43,7 +43,7 @@ def get_trustworthiness(request: Request, address: str):
             "address": transactions_json["address"],
             "transactions": transactions_json["items"],
             "num_transactions": len(transactions_json["items"]),
-            "labels": labels if len(labels) > 0 else ["Safe :)"],
+            "labels": labels if len(labels) > 0 else ["No bad labels :)"]
         },
     )
 
