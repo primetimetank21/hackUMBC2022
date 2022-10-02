@@ -14,6 +14,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # TODO: look into Etherscan api
     # ref: https://etherscan.io/apis
     main()
