@@ -12,3 +12,6 @@ matplotlib==3.6.0
 ipython==8.5.0
 bs4==0.0.1
 random-user-agent==1.0.1
+fastapi==0.85.0
+uvicorn[standard]==0.18.3
+jinja2
