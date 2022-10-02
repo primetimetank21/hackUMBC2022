@@ -2,34 +2,31 @@
 Driver code
 """
 
-
-from fastapi import FastAPI, Request
+# Imports
 import uvicorn
-from fastapi.responses import FileResponse
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from covalent_api_lib import get_transactions
 from etherscan_lib import get_labels
 
-
+# Create App Microservice
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+# App Routes
 @app.get("/")
-async def read_root():
+async def landing_page():
+    """Homepage of the TrustDeFi Platform"""
     return FileResponse("./images/logo.png")
-
-
-@app.get("/items/{id}", response_class=HTMLResponse)
-async def read_item(request: Request, _id: str):
-    return templates.TemplateResponse("item.html", {"request": request, "id": _id})
 
 
 @app.get("/transactions/{address}")
 def get_trustworthiness(request: Request, address: str):
+    """Display transactions and trustworthiness of an ETH Address"""
     transactions = get_transactions(address)
     transactions_json = transactions.json()["data"]
     labels = get_labels(address)
@@ -45,7 +42,8 @@ def get_trustworthiness(request: Request, address: str):
             "request": request,
             "address": transactions_json["address"],
             "transactions": transactions_json["items"],
-            "labels": labels,
+            "num_transactions": len(transactions_json["items"]),
+            "labels": labels if len(labels) > 0 else ["Safe :)"],
         },
     )
 
