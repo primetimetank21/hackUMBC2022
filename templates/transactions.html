@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>Item Details</title>
+    <!-- <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet"> -->
+ </head>
+<body>
+    <h1>Transactions for {{ address }}</h1>
+    <ul id="transactions">
+        {% for transaction in transactions %}
+                <li>
+                  <h3>Transaction Hash: {{ transaction.tx_hash }}</h3>
+                  <p>${{ transaction.value_quote }} transferred</p>
+                  <p>Date occurred: {{ transaction.block_signed_at }}</p>
+                </li>
+            {% endfor %}
+    </ul>
+    <h3> Trustworthiness labels:</h3>
+    {% for label in labels %}
+    <ul id="trustworthiness-labels"></ul>
+    <li>{{ label }}</li>
+{% endfor %}
+
+
+</body>
+</html>

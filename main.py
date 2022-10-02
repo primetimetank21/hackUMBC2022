@@ -1,58 +1,54 @@
-# """
-# Driver code
-# """
-# # pylint: disable=unused-import
-# import json
-# from covalent_api_lib import get_transactions
-# from etherscan_lib import get_labels
-# import pandas as pd
-
-# import scipy
-# import seaborn as sns
-# import numpy as np
-# import matplotlib.pyplot as plt
+"""
+Driver code
+"""
 
 
-
-
-# def main():
-#     """Driver code"""
-#     address = "0x0E57edbA0FccB1E388926193c873120cab961fEe"
-#     transaction = get_transactions(address)
-#     with open("transaction.json", "w", encoding="utf-8") as f:
-#         json.dump(transaction.json(), f)
-
-#     labels = get_labels(address)
-#     print(labels)
-#     # with open("transaction.json", "r", encoding="utf-8") as f:
-#     #     transactions = json.load(f)
-#     # transaction_array = transactions["data"]["items"]
-#     # transaction_df = pd.DataFrame(transaction_array)
-#     # transaction_df.to_csv("transaction.csv")
-#     # transaction_df.drop(["from_address_label", "to_address_label"], axis=1)
-#     # print(transaction_df.head())
-
-
-# if __name__ == "__main__":
-#     main()
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import uvicorn
 from fastapi.responses import FileResponse
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from covalent_api_lib import get_transactions
+from etherscan_lib import get_labels
 
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 
 @app.get("/")
 async def read_root():
-    return FileResponse("./images/get_labels_output_ex.png")
+    return FileResponse("./images/logo.png")
 
 
+@app.get("/items/{id}", response_class=HTMLResponse)
+async def read_item(request: Request, _id: str):
+    return templates.TemplateResponse("item.html", {"request": request, "id": _id})
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q=None):
-    return {"item_id": item_id, "q": q}
+
+@app.get("/transactions/{address}")
+def get_trustworthiness(request: Request, address: str):
+    transactions = get_transactions(address)
+    transactions_json = transactions.json()["data"]
+    labels = get_labels(address)
+
+    for trans in transactions_json["items"]:
+        rounded_quote = round(trans["value_quote"], 2)
+        trans["value_quote"] = rounded_quote
+        labels = [label.title() for label in labels]
+
+    return templates.TemplateResponse(
+        "transactions.html",
+        {
+            "request": request,
+            "address": transactions_json["address"],
+            "transactions": transactions_json["items"],
+            "labels": labels,
+        },
+    )
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
