@@ -15,6 +15,7 @@ def get_transactions(address) -> requests.Response:
     )
     params = {
         "quote-currency": "USD",
+        "no-logs": True
     }
-    res = requests.get(transactions_endpoint, params=params, timeout=6)
-    return res
+    transactions = requests.get(transactions_endpoint, params=params, timeout=15)
+    return transactions
