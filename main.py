@@ -38,14 +38,16 @@
 
 from fastapi import FastAPI
 import uvicorn
+from fastapi.responses import FileResponse
 
 
 app = FastAPI()
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def read_root():
+    return FileResponse("./images/get_labels_output_ex.png")
+
 
 
 @app.get("/items/{item_id}")
